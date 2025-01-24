@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('user_evenements', function (Blueprint $table) {
             $table->id();
             $table->uuid('ref');
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->date('date');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

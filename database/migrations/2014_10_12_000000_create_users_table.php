@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->uuid('ref');
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->foreign('poste_id')->references('id')->on('postes');
             $table->unsignedBigInteger('subdivision_id');
             $table->foreign('subdivision_id')->references('id')->on('subdivisions');
-            $table->tinyInteger('role_id');
+            $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
             $table->double('montant_a_cotiser')->nullable();
             $table->double('solde_initial')->nullable();
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

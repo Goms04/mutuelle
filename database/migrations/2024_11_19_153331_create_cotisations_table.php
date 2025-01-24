@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('cotisations', function (Blueprint $table) {
             $table->id();
             $table->uuid('ref');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->unique(['mois', 'annee']);
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

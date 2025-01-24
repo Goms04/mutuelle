@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('otpps', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
@@ -20,6 +21,7 @@ return new class extends Migration
             $table->timestamp('expires_at');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

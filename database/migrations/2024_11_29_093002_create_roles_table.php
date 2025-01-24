@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->uuid('ref');
             $table->string('libelle')->unique();
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

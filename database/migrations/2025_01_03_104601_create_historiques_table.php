@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('historiques', function (Blueprint $table) {
             $table->id();
             $table->date('date');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->string('user_ref');
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

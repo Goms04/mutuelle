@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('postes', function (Blueprint $table) {
             $table->id();
             $table->uuid('ref');
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->timestamps();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
