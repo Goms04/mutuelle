@@ -32,41 +32,5 @@ class UserSeeder extends Seeder
             'solde_initial' => 200000,
             'enabled' => true
         ]);
-        
-        
-        User::create([
-            'ref' => Str::uuid(),
-            'nom' => "Toto",
-            'prenom' => "Titi",
-            'sexe' => 1,
-            'date_naissance' => "2002/11/03",
-            'email' => "toto.titi@idstechnologie.com",
-            'poste_id' => "1",
-            'subdivision_id' => "1",
-            'role_id' => "2",
-            'montant_a_cotiser' => "15000",
-            'index' => 2,
-            'password' => Hash::make('Titi04'),
-            'solde_initial' => 150000,
-            'enabled' => true
-        ]);
-        
-        
-        User::create([
-            'ref' => Str::uuid(),
-            'nom' => "Goba",
-            'prenom' => "Janvier",
-            'sexe' => 1,
-            'date_naissance' => "2004/06/29",
-            'email' => "janvier.goba@idstechnologie.com",
-            'poste_id' => "1",
-            'subdivision_id' => "1",
-            'role_id' => "2",
-            'montant_a_cotiser' => "12000",
-            'index' => 3,
-            'password' => Hash::make('Janvier04'),
-            'solde_initial' => 180000,
-            'enabled' => true
-        ]);
     }
 }
