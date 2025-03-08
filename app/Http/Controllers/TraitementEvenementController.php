@@ -60,6 +60,7 @@ class TraitementEvenementController extends Controller
             //récupérer la liste des users dont l'index eest strictement supérieur à 0
             $users = User::where('deleted', false)
                 ->where('index', '>', 0)
+                ->where('enabled', true)
                 ->get();
             // vérifier et recupérer depuis la table traitement les traitements d'un évènement
             $traitement = TraitementEvenement::where('evenement_ref', $ref)->get();
@@ -72,7 +73,9 @@ class TraitementEvenementController extends Controller
             // Vérifiez si l'index de l'utilisateur est supérieur à 0
             if ($user->index > 0) {
                 // Récupérez tous les utilisateurs qui ne sont pas supprimés
-                $uss = User::where('deleted', false)->get();
+                $uss = User::where('deleted', false)
+                    ->where('enabled', true)
+                    ->get();
 
 
                 // Trouvez le maximum de l'index parmi les utilisateurs

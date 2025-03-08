@@ -32,15 +32,26 @@ class CotisationController extends Controller
 
     public function showobject($ref)
     {
-        $cotisation = Cotisation::where('ref', $ref)->firstOrFail();
+        $ucot = UserCotisation::where('ref_cotisation', $ref)->get();
+        $data = $ucot->map(function ($item) {
+            return [
+                'nom' => $item->nom,
+                'prenom' => $item->prenom,
+                'email' => $item->email,
+                'mois' => $item->mois,
+                'annee' => $item->annee,
+                'montant_cotise' => $item->montant_cotise,
+            ];
+        });
+
         return response()->json([
             'code' => 200,
             'message' => 'Okay',
-            'objet' => $cotisation
+            'objet' => $data
         ]);
     }
 
-   /*  public function createco(Request $request)
+    /*  public function createco(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -95,7 +106,7 @@ class CotisationController extends Controller
             ]);
 
             // Récupérer tous les utilisateurs
-            $users = User::all();
+            $users = User::where('enable', true)->get();
 
             // Créer une cotisation pour chaque utilisateur
             foreach ($users as $user) {
@@ -124,7 +135,6 @@ class CotisationController extends Controller
                 $user->update([
                     'solde_initial' => $user->solde_initial + $user->montant_a_cotiser,
                 ]);
-
             }
 
             $cotisation->update([

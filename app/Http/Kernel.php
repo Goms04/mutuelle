@@ -56,8 +56,8 @@ class Kernel extends HttpKernel
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'admin' => \App\Http\Middleware\IsAdmin::class, // Pour reconnaitre mon middleware IsAdmin que j'ai créé, après ça on peut utiliser la route
-        'tresorier' => \App\Http\Middleware\IsTresorier::class, // Pour reconnaitre mon middleware IsAdmin que j'ai créé, après ça on peut utiliser la route
-        'mutualiste' => \App\Http\Middleware\IsMutualiste::class, // Pour reconnaitre mon middleware IsAdmin que j'ai créé, après ça on peut utiliser la route
+        'adval' => \App\Http\Middleware\IsAdVal::class, // Pour reconnaitre mon middleware IsAdmin que j'ai créé, après ça on peut utiliser la route
+        'advalmu' => \App\Http\Middleware\IsAdValMu::class, // Pour reconnaitre mon middleware IsAdmin que j'ai créé, après ça on peut utiliser la route
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

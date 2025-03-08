@@ -50,9 +50,12 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 
     Route::POST('sendotp', OtppController::class . '@sendOtp');
     Route::POST('sendotpp', OtppController::class . '@send');
+
+
     Route::POST('verifyotp', OtppController::class . '@verifyOtp');
     Route::POST('verifyEmail/{email}', OtppController::class . '@verifyEmail');
     Route::POST('resetpassword/', OtppController::class . '@reset');
+
 
     Route::POST('cotisations/creer/', CotisationController::class . '@cotisation');
     Route::POST('remboursement/creer/', RemboursementController::class . '@rembourauto');
@@ -60,22 +63,15 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 
 
 
+Route::middleware('api')->group(function () {
+    Route::POST('/auto', RemboursementController::class . '@rembourauto'); //rembousements
+});
+
 
 
 //Ci-dessous les routes de l'admin
-Route::group(['middleware' => ['api', 'admin']], function () {
-
-    
-    
-    Route::GET('/users/index/', UserController::class . '@userind');
-    Route::POST('users/creer/', UserController::class . '@register');
-    Route::PUT('/users/modifier/{ref}', UserController::class . '@update')->name('user.update');
-    Route::POST('/users/supprimer/{ref}', UserController::class . '@delete')->name('user.delete');
-    Route::GET('/users/{ref}', UserController::class . '@showobject')->name('user');
-    Route::GET('/users/', UserController::class . '@show');
-    // modifier un index
-    Route::PUT('/users/modifier/index/{ref}', UserController::class . '@index');
-    
+Route::middleware(['api', 'admin'])->group(function () {
+         
     // Routes pour les rôles
     Route::POST('roles/creer/', RoleController::class . '@create');
     Route::POST('roles/supprimer/{ref}', RoleController::class . '@delete');
@@ -83,8 +79,27 @@ Route::group(['middleware' => ['api', 'admin']], function () {
     Route::GET('roles/', RoleController::class . '@show');
     Route::GET('roles/{ref}', RoleController::class . '@showobject');
     
+
+    //Route::POST('evenements/supprimer/{ref}', EvenementController::class . '@delete'); 
+
+   
     
-    
+});
+
+
+
+//Ci-dessous les routes du validateur et admin
+Route::middleware(['api', 'adval'])->group(function () {
+
+    Route::GET('/users/index/', UserController::class . '@userind');
+    Route::POST('users/creer/', UserController::class . '@register');
+    Route::PUT('/users/modifier/{ref}', UserController::class . '@update')->name('user.update');
+    Route::POST('/users/supprimer/{ref}', UserController::class . '@delete')->name('user.delete');
+    Route::GET('/users/{ref}', UserController::class . '@showobject')->name('user');
+    Route::GET('/users/', UserController::class . '@show');
+    Route::PUT('/users/modifier/index/{ref}', UserController::class . '@index'); // modifier un index
+
+
 
     //Routes pour trésorier(middleware à créer après)
     //cotisation
@@ -92,10 +107,11 @@ Route::group(['middleware' => ['api', 'admin']], function () {
 
     Route::PUT('cotisations/modifier/{ref}', CotisationController::class . '@update');//Trésorier
     Route::GET('cotisations/', CotisationController::class . '@show'); //Trésorier
-    Route::GET('cotisations/{ref}', CotisationController::class . '@showobject'); //Trésorier
+    Route::GET('ucotisations/{ref}', CotisationController::class . '@showobject'); //automatique
     //ucotisation
     //Route::GET('ucotisations/', UserCotisationController::class . '@show');
     Route::GET('ucotisations/', UserCotisationController::class . '@showobject'); //Trésorier
+    
     Route::GET('ucotisations/total', UserCotisationController::class . '@somme'); //tésorier
     //Type d'évènement
     Route::GET('type_evenements/', TypeEvenementController::class . '@show');//Trésorier
@@ -113,16 +129,29 @@ Route::group(['middleware' => ['api', 'admin']], function () {
     Route::GET('evenements/{ref}', EvenementController::class . '@showobject'); // Route dynamique avec paramètre
     Route::POST('evenements/creer', EvenementController::class . '@create'); 
     Route::PUT('evenements/modifier/{ref}', EvenementController::class . '@update');
-    //Route::POST('evenements/supprimer/{ref}', EvenementController::class . '@delete');
-    
-    
+
+
     //Traitement
     Route::GET('evenements/traitements/{ref}', TraitementEvenementController::class . '@showlist');
     Route::POST('evenements/valider/{ref}', TraitementEvenementController::class . '@lancer'); 
+});
 
 
 
 
+//Ci-dessous les routes d'eux tous'
+Route::middleware(['api', 'advalmu'])->group(function () {
+
+    Route::GET('/dashboard/nbpret', DashboardController::class . '@npret');
+    Route::GET('/dashboard/pretattente', DashboardController::class . '@npretatt');
+    Route::GET('/dashboard/nbev', DashboardController::class . '@nev');
+    Route::GET('/dashboard/evattente', DashboardController::class . '@nevatt');
+    Route::GET('/dashboard/solde', DashboardController::class . '@solde');
+    Route::GET('/dashboard/soldeindividuel', DashboardController::class . '@soldeind');
+    
+    
+    Route::GET('/historique/', HistoriqueController::class . '@historique');
+    
     Route::GET('prets/all', PretController::class . '@showall'); //getall()
     Route::GET('prets/show', PretController::class . '@showme'); //show()
     Route::GET('prets/', PretController::class . '@show'); //getbyuser()
@@ -141,47 +170,23 @@ Route::group(['middleware' => ['api', 'admin']], function () {
     Route::GET('remboursements/', RemboursementController::class . '@getall'); //get tous les remboursements
     Route::POST('/remboursements/lancer/{ref}', RemboursementController::class . '@rembourser'); //rembousements
 
-
-
-    Route::GET('/dashboard/nbpret', DashboardController::class . '@npret');
-    Route::GET('/dashboard/pretattente', DashboardController::class . '@npretatt');
-    Route::GET('/dashboard/nbev', DashboardController::class . '@nev');
-    Route::GET('/dashboard/evattente', DashboardController::class . '@nevatt');
-    Route::GET('/dashboard/solde', DashboardController::class . '@solde');
-    Route::GET('/dashboard/soldeindividuel', DashboardController::class . '@soldeind');
-    
-    
-    Route::GET('/historique/', HistoriqueController::class . '@historique');
     
 
+});
+
+
+//Ci-dessous les routes du validateur seul
+Route::group(['middleware' => ['api', 'validateur']], function () {
 
 });
 
 
 
 
-//Ci-dessous les routes du trésorier seul
-Route::group(['middleware' => ['api', 'tresorier']], function () {
-
-});
 
 
 
 
-//Ci-dessous les routes du trésorier & admin
-Route::group(['middleware' => ['api', 'admin', 'tresorier']], function () {
-
-});
 
 
 
-
-//Ci-dessous les routes de tout le monde
-Route::group(['middleware' => ['api', 'auth']], function ($router) {
-
-    //Déclaration d'évènement
-    
-    
-
-
-});

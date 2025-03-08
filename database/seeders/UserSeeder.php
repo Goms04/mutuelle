@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             'email' => "plateforme@idstechnologie.com",
             'role_id' => "1",
             'montant_a_cotiser' => "5000",
-            'index' => 1,
+            'index' => 0,
             'password' =>  Str::uuid(),
             'solde_initial' => 0,
             'enabled' => false

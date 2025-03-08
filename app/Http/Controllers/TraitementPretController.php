@@ -50,14 +50,18 @@ class TraitementPretController extends Controller
 
             $user = Auth::user();
             $pret = Pret::where('ref', $ref)->firstOrFail();
-            $users = User::where('deleted', false)->get();
+            $users = User::where('deleted', false)
+                ->where('enabled', true)
+                ->get();
 
 
             // Vérifiez si l'index de l'utilisateur est supérieur à 0
             if ($user->index > 0) {
 
                 // Récupérez tous les utilisateurs qui ne sont pas supprimés
-                $uss = User::where('deleted', false)->get();
+                $uss = User::where('deleted', false)
+                    ->where('enabled', true)
+                    ->get();
                 // Trouvez le maximum de l'index parmi les utilisateurs
                 $maxIndex = $uss->max('index');
 
@@ -90,7 +94,7 @@ class TraitementPretController extends Controller
                             'user_ref' => $pret->user->ref,
                             'user_id' => $pret->user->id,
                             'motif' => $pret->motif_pret,
-                            'montant' => $pret->montant,
+                            'montant' => $pret->montant_accorde,
                             'nom' => $pret->user->nom,
                             'prenom' => $pret->user->prenom,
                             'email' => $pret->user->email,
@@ -107,7 +111,6 @@ class TraitementPretController extends Controller
                         $us->update([
                             'solde_initial' => $us->solde_initial - $pret->montant
                         ]);
-
                     }
                 } else {
                     //si l'utilisateur n'est pas le dernier
