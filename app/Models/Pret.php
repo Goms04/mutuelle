@@ -12,20 +12,20 @@ class Pret extends Model
 
     protected $fillable = [
         'ref',
-        'montant',
+        //'montant',
         'motif_pret', //
         'date_pret',
-        'mode_remboursement', //boolean
+        //'mode_remboursement', //bool
         'montant_remboursement',
         'validated',
         'soldout', //boolean
-        'prerequis', //boolean
+        //'prerequis',
         'isfinished', //boolean
-        'duree',
-        'marge_totale',
-        'quotite_cessible',
+        //'duree',
+        /*'marge_totale',
+        'quotite_cessible', */
         'montant_accorde',
-        'duree_remboursement_accorde',
+        //'duree_remboursement_accorde',
         'user_id',
         'index'
     ];

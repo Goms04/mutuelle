@@ -60,6 +60,7 @@ class TraitementPretController extends Controller
                 $uss = User::where('deleted', false)->get();
                 // Trouvez le maximum de l'index parmi les utilisateurs
                 $maxIndex = $uss->max('index');
+
                 // Vérifiez si l'utilisateur a l'index maximum
                 if ($user->index === $maxIndex) {
                     // L'utilisateur a l'index le plus élevé et est donc le dernier
@@ -100,6 +101,13 @@ class TraitementPretController extends Controller
                             'isfinished' => true,
                             'index' => $user->index
                         ]);
+
+                        //solde de l'utilisateur qui demandé le prêt - le montant qui lui a été accordé
+                        $us = User::where('id', $pret->user_id)->firstOrFail();
+                        $us->update([
+                            'solde_initial' => $us->solde_initial - $pret->montant
+                        ]);
+
                     }
                 } else {
                     //si l'utilisateur n'est pas le dernier

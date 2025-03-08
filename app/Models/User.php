@@ -27,8 +27,8 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword, Must
         'sexe',
         'date_naissance',
         'email',
-        'poste_id',
-        'subdivision_id',
+        /* 'poste_id',
+        'subdivision_id', */
         'role_id',
         'montant_a_cotiser',
         'password',
@@ -47,19 +47,12 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword, Must
         return $this->hasMany(Otpp::class);
     }
 
-    public function poste(){
-        return $this->belongsTo(Poste::class);
-    }
-
+   
     public function role(){
         return $this->belongsTo(Role::class);
     }
 
-
-    public function subdivision(){
-        return $this->belongsTo(Subdivision::class);
-    }
-
+   
     public function pret(){
         return $this->hasMany(Pret::class);
     }

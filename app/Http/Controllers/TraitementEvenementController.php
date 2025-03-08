@@ -143,6 +143,10 @@ class TraitementEvenementController extends Controller
                                     'date' => today(),
                                 ]);
 
+                                $u->update([
+                                    'solde_initial' => $u->solde_initial - $montant_par_tete
+                                ]);
+
                                 Historique::create([
                                     'date' => today(),
                                     'libelle' => $evenement->description,

@@ -101,7 +101,7 @@ class PretController extends Controller
             'objet' => $data,
         ]);
     }
-
+ 
 
     //count prêt en fonction de l'utilisateur connecté: prets/count
     public function counpret()
@@ -129,15 +129,12 @@ class PretController extends Controller
                 'ref' => $item->ref,
                 'montant' => $item->montant,
                 'motif_pret' => $item->motif_pret,
-                'date_pret' => $item->date_pret,
-                'mode_remboursement' => $item->mode_remboursement,
+                'date_pret' => $item->date_pret,                
                 'montant_accorde' => $item->montant_accorde,
                 'montant_remboursement' => $item->montant_remboursement,
                 'validated' => $item->validated,
                 'isfinished' => $item->isfinished,
                 'soldout' => $item->soldout,
-                'prerequis' => $item->prerequis,
-                'duree' => $item->duree,
             ];
         });
 
@@ -169,12 +166,10 @@ class PretController extends Controller
             //mode_remborsement, 0 pour chèques, 1 pour source
             $pret = Pret::create([
                 'ref' => Str::uuid(),
-                'montant' => $request->input('montant'),
+                'montant_accorde' => $request->input('montant_accorde'),
                 'motif_pret' => $request->input('motif'), //
                 'date_pret' => today(),
-                'mode_remboursement' => $request->input('mode_remboursement'), //boolean
                 'montant_remboursement' => $request->input('montant_remboursement'),
-                'duree' => $request->input('duree'),
                 'user_id' => Auth::user()->id,
             ]);
 
@@ -216,7 +211,7 @@ class PretController extends Controller
     } */
 
     //fonction modification par l'admin
-    public function update(Request $request, $ref)
+    /* public function update(Request $request, $ref)
     {
         DB::beginTransaction();
         try {
@@ -244,7 +239,7 @@ class PretController extends Controller
                 'Erreur' => $e->getMessage(),
             ]);
         }
-    }
+    } */
 
     //fonction modification par l'utilisateur
     public function updatebyuser(Request $request, $ref)
@@ -256,15 +251,11 @@ class PretController extends Controller
 
                 'montant' => 'required',
                 'motif_pret' => 'required',
-                'mode_remboursement' => 'required',
                 'montant_remboursement' => 'required',
-                'duree' => 'required',
             ], [
                 'montant.required' => 'le champ montant est obligatoire',
                 'motif_pret.required' => 'le champ motif du pret est obligatoire',
-                'mode_remboursement.required' => 'le champ mode de remboursement est obligatoire',
                 'montant_remboursement.required' => 'le champ montant à remboursement est obligatoire',
-                'duree.required' => 'le champ duree est obligatoire',
             ]);
 
             if ($valid->fails()) {

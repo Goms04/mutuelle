@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('email');
             $table->string('nom');
             $table->string('prenom');
-            $table->double('capital_brut')->default(0);
-            $table->double('capital_net')->default(0);
+           /*  $table->double('capital_brut')->default(0);
+            $table->double('capital_net')->default(0); */
             $table->double('montant_cotise');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

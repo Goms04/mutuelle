@@ -15,6 +15,7 @@ class Historique extends Model
         'montant',
         'user_id',
         'user_ref',
+        'type',
     ];
 
 

@@ -93,7 +93,7 @@ class OtppController extends Controller
             );
         }
         // Effectuer une requête POST vers l'API Spring Boot
-        $response = Http::post('http://192.168.137.194:9096/api/users', [
+        $response = Http::post('http://192.168.1.160:9096/api/users', [
             'email' => $em->email,
             'otp' => $otpCode,
             /* 'expires_at' => $expiresAt->toISOString(), */
@@ -160,7 +160,7 @@ class OtppController extends Controller
 
             if ($user) {
 
-                $response = Http::get('http://192.168.137.194:9096/api/users?token=' . $otp);
+                $response = Http::get('http://192.168.1.160:9096/api/users?token=' . $otp);
 
                 // Vérifier le code de statut de la réponse
                 $statusCode = $response->status(); // Obtient le code de statut HTTP

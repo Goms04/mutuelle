@@ -20,10 +20,10 @@ return new class extends Migration
             $table->boolean('sexe');
             $table->date('date_naissance');
             $table->string('email')->unique();
-            $table->unsignedBigInteger('poste_id');
+            /* $table->unsignedBigInteger('poste_id');
             $table->foreign('poste_id')->references('id')->on('postes');
             $table->unsignedBigInteger('subdivision_id');
-            $table->foreign('subdivision_id')->references('id')->on('subdivisions');
+            $table->foreign('subdivision_id')->references('id')->on('subdivisions'); */
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
             $table->double('montant_a_cotiser')->nullable();

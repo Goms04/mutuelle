@@ -40,7 +40,7 @@ class CotisationController extends Controller
         ]);
     }
 
-    public function createco(Request $request)
+   /*  public function createco(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -77,18 +77,26 @@ class CotisationController extends Controller
                 'Erreur!' => $e->getMessage()
             ]);
         }
-    }
+    } */
 
 
     //fonction qui lance la cotisation mensuelle
-    public function cotisation($ref)
+    public function cotisation(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $cotisation = Cotisation::where('ref', $ref)->firstOrFail();
+
+            $cotisation = Cotisation::create([
+                'ref' => Str::uuid(),
+                'mois' => now()->format('m'),
+                'annee' => now()->format('Y'),
+                'isdone' => false
+            ]);
+
             // Récupérer tous les utilisateurs
             $users = User::all();
+
             // Créer une cotisation pour chaque utilisateur
             foreach ($users as $user) {
                 $usercotisation = UserCotisation::create([
@@ -112,6 +120,11 @@ class CotisationController extends Controller
                     'user_id' => $user->id,
                     'user_ref' => $user->ref,
                 ]);
+
+                $user->update([
+                    'solde_initial' => $user->solde_initial + $user->montant_a_cotiser,
+                ]);
+
             }
 
             $cotisation->update([

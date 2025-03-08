@@ -128,18 +128,10 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
 
-            $poste = Poste::where('ref', $request->input('poste_id'))->first();
-            $subdivision = Subdivision::where('ref', $request->input('subdivision_id'))->first();
+            
             $role = Role::where('ref', $request->input('role_id'))->first();
 
-            //dd($poste, $subdivision, $role);
-
-            if (!$poste) {
-                return response()->json(['error' => 'Référence de poste non valides fournies'], 400);
-            }
-            if (!$subdivision) {
-                return response()->json(['error' => 'Référence de subdivision non valides fournies'], 400);
-            }
+            
             if (!$role) {
                 return response()->json(['error' => 'Référence  de role non valides fournies'], 400);
             }
@@ -151,8 +143,6 @@ class UserController extends Controller
                 'sexe' => $request->input('sexe'),
                 'date_naissance' => $request->input('date_naissance'),
                 'email' => $request->input('email'),
-                'poste_id' => $poste->id,
-                'subdivision_id' => $subdivision->id,
                 'role_id' => $role->id,
                 'solde_initial' => $request->solde_initial,
                 'montant_a_cotiser' => $request->input('montant_a_cotiser'),
@@ -163,8 +153,8 @@ class UserController extends Controller
 
             DB::commit();
             return response()->json([
-                'status_code' => 200,
-                'status_message' => 'Mutualiste créé avec succès',
+                'code' => 200,
+                'message' => 'Mutualiste créé avec succès',
                 'objet' => $user
             ]);
         } catch (\Exception $e) {
@@ -191,15 +181,12 @@ class UserController extends Controller
                 'sexe' => 'required',
                 'date_naissance' => 'required',
                 'email' => 'required',
-                'poste_id' => 'required',
-                'subdivision_id' => 'required',
                 'role_id' => 'required',
                 'montant_a_cotiser' => 'required',
             ]);
 
             $user = User::where('ref', $ref)->firstOrFail();
-            $poste = Poste::where('ref', $request->input('poste_id'))->first();
-            $subdivision = Subdivision::where('ref', $request->input('subdivision_id'))->first();
+            
             $role = Role::where('ref', $request->input('role_id'))->first();
 
             $user->update([
@@ -208,8 +195,6 @@ class UserController extends Controller
                 'sexe' => $request->input('sexe'),
                 'date_naissance' => $request->input('date_naissance'),
                 'email' => $request->input('email'),
-                'poste_id' => $poste->id,
-                'subdivision_id' => $subdivision->id,
                 'role_id' => $role->id,
                 'montant_a_cotiser' => $request->input('montant_a_cotiser'),
             ]);
@@ -235,7 +220,9 @@ class UserController extends Controller
     {
         try {
             $user = User::where('ref', $ref)->firstOrFail();
-            $user->delete();
+            $user->update([
+                'enabled' => false
+            ]);
             return response()->json(['message' => 'Mutualiste supprimé avec succès'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur lors de la suppression du mutualiste', 'error' => $e->getMessage()], 500);
@@ -323,7 +310,15 @@ class UserController extends Controller
     }
 
 
-    public function oublie(Request $request) {}
+    public function userind() {
+        $users = User::where('index', '>', 0)->get();
+        
+        return response()->json([
+            'statut' => 200,
+            'message' => 'Okay',
+            'objet' => $users,
+        ]);
+    }
 
 
     public function reinitialiser(Request $request) {}

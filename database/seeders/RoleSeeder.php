@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
 
         Role::create([
             'ref' => Str::uuid(),
-            'libelle' => "Trésorier",
+            'libelle' => "Validateur",
         ]);
 
         Role::create([

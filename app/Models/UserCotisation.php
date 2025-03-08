@@ -19,8 +19,8 @@ class UserCotisation extends Model
         'email',
         'nom',
         'prenom',
-        'capital_brut',
-        'capital_net',
+        /* 'capital_brut',
+        'capital_net', */
         'montant_cotise',
         'user_id',
         'cotisation_id',

@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
+
 //Ci-dessous les routes du peuple:authentification
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 
@@ -53,7 +54,10 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::POST('verifyEmail/{email}', OtppController::class . '@verifyEmail');
     Route::POST('resetpassword/', OtppController::class . '@reset');
 
+    Route::POST('cotisations/creer/', CotisationController::class . '@cotisation');
+    Route::POST('remboursement/creer/', RemboursementController::class . '@rembourauto');
 });
+
 
 
 
@@ -63,6 +67,7 @@ Route::group(['middleware' => ['api', 'admin']], function () {
 
     
     
+    Route::GET('/users/index/', UserController::class . '@userind');
     Route::POST('users/creer/', UserController::class . '@register');
     Route::PUT('/users/modifier/{ref}', UserController::class . '@update')->name('user.update');
     Route::POST('/users/supprimer/{ref}', UserController::class . '@delete')->name('user.delete');
@@ -78,25 +83,13 @@ Route::group(['middleware' => ['api', 'admin']], function () {
     Route::GET('roles/', RoleController::class . '@show');
     Route::GET('roles/{ref}', RoleController::class . '@showobject');
     
-    // Routes pour les subdivisions
-    Route::POST('subdivisions/creer/', SubdivisionController::class . '@create');
-    Route::POST('subdivisions/supprimer/{ref}', SubdivisionController::class . '@delete');
-    Route::PUT('subdivisions/modifier/{ref}', SubdivisionController::class . '@update');
-    Route::GET('subdivisions/', SubdivisionController::class . '@show');
-    Route::GET('subdivisions/{ref}', SubdivisionController::class . '@showobject');
     
-    // Routes pour les postes
-    Route::POST('postes/creer/', PosteController::class . '@create');
-    Route::POST('postes/supprimer/{ref}', PosteController::class . '@delete');
-    Route::PUT('postes/modifier/{ref}', PosteController::class . '@update');
-    Route::GET('postes/', PosteController::class . '@show');
-    Route::GET('postes/{ref}', PosteController::class . '@showobject');
     
 
     //Routes pour trésorier(middleware à créer après)
     //cotisation
     Route::POST('cotisations/creer', CotisationController::class . '@createco'); //Trésorier
-    Route::POST('cotisations/creer/{ref}', CotisationController::class . '@cotisation'); //Trésorier
+
     Route::PUT('cotisations/modifier/{ref}', CotisationController::class . '@update');//Trésorier
     Route::GET('cotisations/', CotisationController::class . '@show'); //Trésorier
     Route::GET('cotisations/{ref}', CotisationController::class . '@showobject'); //Trésorier

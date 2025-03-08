@@ -74,11 +74,11 @@ class DashboardController extends Controller
     public function solde()
     {
 
-        $solde_user = User::sum('solde_initial');
-        $cotisation = UserCotisation::sum('montant_cotise');
-        $evenement = UserEvenement::sum('montant');
+        $solde_total = User::sum('solde_initial');
+        //$cotisation = UserCotisation::sum('montant_cotise');
+        //$evenement = UserEvenement::sum('montant');
 
-        $solde_total = $solde_user + $cotisation - $evenement;
+        //$solde_total = $solde_user + $cotisation - $evenement;
         //dd($solde_total);
         return response()->json([
             'code' => 200,
@@ -92,10 +92,11 @@ class DashboardController extends Controller
     public function soldeind()
     {
         $user = Auth::user();
-        $user_ref = $user->ref;
-        $mont = UserCotisation::where('ref_user', $user_ref)->sum('montant_cotise');
+        $montant = $user->solde_initial;
+        /* $mont = UserCotisation::where('ref_user', $user_ref)->sum('montant_cotise');
         $ev = UserEvenement::where('ref_user_dest', $user_ref)->sum('montant');
-        $montant = $user->solde_initial + $mont - $ev;
+
+        $montant = $user->solde_initial + $mont - $ev; */
 
         return response()->json([
             'code' => 200,

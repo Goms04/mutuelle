@@ -15,21 +15,21 @@ return new class extends Migration
         Schema::create('prets', function (Blueprint $table) {
             $table->id();
             $table->uuid('ref');
-            $table->integer('montant');
+            //$table->integer('montant');
             $table->date('date_pret');
             $table->string('motif_pret');
-            $table->boolean('mode_remboursement');
+            //$table->boolean('mode_remboursement');
             $table->boolean('soldout')->default(0);
-            $table->boolean('prerequis')->default(0);
+            //$table->boolean('prerequis')->default(0);
             $table->boolean('isfinished')->default(0);
             $table->double('montant_remboursement');
-            $table->integer('duree');
-            $table->string('marge_totale')->nullable();
-            $table->double('quotite_cessible')->nullable();
+            //$table->integer('duree');
+            //$table->string('marge_totale')->nullable();
+            //$table->double('quotite_cessible')->nullable();
             $table->boolean('validated')->default(0);
             $table->tinyInteger('index')->default(0);
             $table->double('montant_accorde')->nullable();
-            $table->integer('duree_remboursement_accorde')->nullable();
+            //$table->integer('duree_remboursement_accorde')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
