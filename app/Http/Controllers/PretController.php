@@ -32,7 +32,7 @@ class PretController extends Controller
                 'motif_pret' => $item->motif_pret,
                 'date_pret' => $item->date_pret,
                 'mode_remboursement' => $item->mode_remboursement,
-                'montant_remboursement' => $item->montant_remboursement,
+                'nbmois_remboursement' => $item->nbmois_remboursement,
                 'validated' => $item->validated,
                 'isfinished' => $item->isfinished,
                 'soldout' => $item->soldout,                
@@ -78,7 +78,7 @@ class PretController extends Controller
                 'motif_pret' => $item->motif_pret,
                 'date_pret' => $item->date_pret,
                 'mode_remboursement' => $item->mode_remboursement,
-                'montant_remboursement' => $item->montant_remboursement,
+                'nbmois_remboursement' => $item->nbmois_remboursement,
                 'validated' => $item->validated,
                 'isfinished' => $item->isfinished,
                 'soldout' => $item->soldout,
@@ -127,7 +127,7 @@ class PretController extends Controller
                 'motif_pret' => $item->motif_pret,
                 'date_pret' => $item->date_pret,                
                 'montant_accorde' => $item->montant_accorde,
-                'montant_remboursement' => $item->montant_remboursement,
+                'nbmois_remboursement' => $item->nbmois_remboursement,
                 'validated' => $item->validated,
                 'isfinished' => $item->isfinished,
                 'soldout' => $item->soldout,
@@ -165,7 +165,7 @@ class PretController extends Controller
                 'montant_accorde' => $request->input('montant_accorde'),
                 'motif_pret' => $request->input('motif'), //
                 'date_pret' => today(),
-                'montant_remboursement' => $request->input('montant_remboursement'),
+                'nbmois_remboursement' => $request->input('nbmois_remboursement'),
                 'user_id' => Auth::user()->id,
             ]);
 
@@ -247,11 +247,11 @@ class PretController extends Controller
 
                 'montant' => 'required',
                 'motif_pret' => 'required',
-                'montant_remboursement' => 'required',
+                'nbmois_remboursement' => 'required',
             ], [
                 'montant.required' => 'le champ montant est obligatoire',
                 'motif_pret.required' => 'le champ motif du pret est obligatoire',
-                'montant_remboursement.required' => 'le champ montant à remboursement est obligatoire',
+                'nbmois_remboursement.required' => 'le champ montant à remboursement est obligatoire',
             ]);
 
             if ($valid->fails()) {

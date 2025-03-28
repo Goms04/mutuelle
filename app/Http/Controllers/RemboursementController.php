@@ -94,6 +94,8 @@ class RemboursementController extends Controller
             $prets = Pret::where('ref', $ref)->firstOrFail();
             $user = User::where('id', $prets->user_id)->firstOrFail();
 
+
+
             $remboursement = Remboursement::create([
                 'ref' => Str::uuid(),
                 'date_remboursement' => today(),
@@ -115,6 +117,8 @@ class RemboursementController extends Controller
                 'type' => true
             ]);
 
+
+
             $somme_remboursement = Remboursement::where('pret_id', $prets->id)->sum('montant');
             $aremb = $prets->montant_accorde + ($prets->montant_accorde * 5 / 100);
 
@@ -127,11 +131,11 @@ class RemboursementController extends Controller
                 ]);
 
                 $user->update([
-                    'solde_initial' => $user->montant_initial + $remboursement->montant
+                    'solde_initial' => $user->solde_initial + $remboursement->montant
                 ]);
             } else {
                 $user->update([
-                    'solde_initial' => $user->montant_initial + $remboursement->montant
+                    'solde_initial' => $user->solde_initial + $remboursement->montant
                 ]);
             }
 
@@ -155,6 +159,7 @@ class RemboursementController extends Controller
                 'message' => 'Prêt exécuté avec succès',
                 'code' => $data,
             ]);
+
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -179,26 +184,43 @@ class RemboursementController extends Controller
 
             $pret = Pret::where('soldout', false)->get();
 
-            
+
             foreach ($pret as $p) {
                 //$mont = $p->montant_remboursement;
                 $user_id = $p->user_id;
-                
+
                 $use = User::where('id', $user_id)->firstOrFail();
-                
+
                 /* $use->update([
                     'solde_initial' => $use->solde_initial + $p->montant_remboursement
                 ]); */
 
-                $somme_remboursement = Remboursement::where('pret_id', $p->id)->sum('montant'); //déjà payé
+
+
+                $somme_remboursement = Remboursement::where('pret_id', $p->id)->sum('montant'); //somme des remboursements déjà payés
                 $aremb = $p->montant_accorde + ($p->montant_accorde * 5 / 100); //montant emprunté + 5%
 
 
+
+                //$montantparmois = $aremb - $somme_remboursement / $p->nbmois_remboursement;
+
+                //on va essayer de compter le nbre de mois de remboursement d'un prêt
+                $cremb = Remboursement::where('pret_id', $p->id)->count();
+
+                //nbre de mois restants pour finaliser le payement
+                $moisrest = $p->nbmois_remboursement - $cremb;
+
+                //réel montant à rembourser par mois //total à rembourser - la somme des remboursement efffectués(y compris les manuels entrés) / le nombre de mois restants
+                $montantparmois = $aremb - $somme_remboursement / $moisrest;
+
+
+                //si somme des remboursements inférieur au montant à rembourser(montant avec les 5%)
                 if($somme_remboursement < $aremb){
                     // prochain payement
-                    if($somme_remboursement + $p->montant_remboursement > $aremb){
+                    if($somme_remboursement + $montantparmois >= $aremb){
                         //debordement
                         $montant_restant = $aremb - $somme_remboursement;
+
                         $remboursement = Remboursement::create([
                             'ref' => Str::uuid(),
                             'date_remboursement' => today(),
@@ -209,11 +231,11 @@ class RemboursementController extends Controller
                             'ref_user' => $use->ref,
                             'email' => $use->email,
                         ]);
-        
-        
+
+
                         Historique::create([
                             'date' => today(),
-                            'libelle' => 'Rembousement mensuelle',
+                            'libelle' => 'Rembousement automatique',
                             'montant' => $montant_restant,
                             'user_id' => $use->id,
                             'user_ref' => $use->ref,
@@ -223,12 +245,14 @@ class RemboursementController extends Controller
                         // sys
                         $user_system = User::where('id', 1)->firstOrFail();
 
+                        //on donne au système les 5%
                         $user_system->update([
                             'solde_initial' => $user_system->solde_initial + ($aremb - $p->montant_accorde)  // 5%
                         ]);
 
+                        //l'utilisateur ayant émi le prêt se voit modifier son solde_initial
                         $use->update([
-                            'solde_initial' => $use->montant_initial + ($montant_restant - ($aremb - $p->montant_accorde))
+                            'solde_initial' => $use->solde_initial + ($montant_restant - ($aremb - $p->montant_accorde))
                         ]);
 
                         $p->update([
@@ -240,26 +264,26 @@ class RemboursementController extends Controller
                         $remboursement = Remboursement::create([
                             'ref' => Str::uuid(),
                             'date_remboursement' => today(),
-                            'montant' => $p->montant_remboursement,
+                            'montant' => $montantparmois,
                             'pret_id' => $p->id,
                             'pret_ref' => $p->ref,
                             'user_id' => $use->id,
                             'ref_user' => $use->ref,
                             'email' => $use->email,
                         ]);
-        
-        
+
+
                         Historique::create([
                             'date' => today(),
-                            'libelle' => 'Rembousement mensuelle',
-                            'montant' => $p->montant_remboursement,
+                            'libelle' => 'Rembousement automatique',
+                            'montant' => $montantparmois,
                             'user_id' => $use->id,
                             'user_ref' => $use->ref,
                             'type' => true //Crédit et debit pour false
                         ]);
 
                         $use->update([
-                            'solde_initial' => $use->montant_initial + $remboursement->montant
+                            'solde_initial' => $use->solde_initial + $remboursement->montant
                         ]);
                     }
 
@@ -270,7 +294,7 @@ class RemboursementController extends Controller
                     ]);
                 }
 
-        
+
                 /* if ($somme_remboursement >= $aremb) {
                     $p->update([
                         'soldout' => true
@@ -282,7 +306,7 @@ class RemboursementController extends Controller
             DB::commit();
             return response()->json([
                 'code' => 200,
-                'message' => 'Prêt exécuté avec succès',
+                'message' => 'Remboursement effectué avec succès',
                 'objet' => 'Okay'
             ]);
         } catch (\Exception $e) {

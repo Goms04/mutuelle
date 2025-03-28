@@ -16,7 +16,7 @@ class Pret extends Model
         'motif_pret', //
         'date_pret',
         //'mode_remboursement', //bool
-        'montant_remboursement',
+        'nbmois_remboursement',
         'validated',
         'soldout', //boolean
         //'prerequis',

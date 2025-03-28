@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('soldout')->default(0);
             //$table->boolean('prerequis')->default(0);
             $table->boolean('isfinished')->default(0);
-            $table->double('montant_remboursement');
+            $table->integer('nbmois_remboursement');
             //$table->integer('duree');
             //$table->string('marge_totale')->nullable();
             //$table->double('quotite_cessible')->nullable();
