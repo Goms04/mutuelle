@@ -116,8 +116,8 @@ class TraitementEvenementController extends Controller
                             'index' => $user->index
                         ]);
 
-                        $use = User::where('deleted', false)->count();
-                        $nbre = $use - 1;
+                        $use = User::where('deleted', false)->where('enabled', true)->count();
+                        $nbre = $use - 1; //On enlève l'utilisateur qui a créé l'évènement et l'utilisateur système
 
                         //on trouve le montant cotisé par chacun
                         $montant_par_tete = $typeEvenement->montant / $nbre;

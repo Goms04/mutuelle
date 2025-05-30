@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'date_naissance' => "1995/05/15",
             'email' => "plateforme@idstechnologie.com",
             'role_id' => "1",
-            'montant_a_cotiser' => "5000",
+            'montant_a_cotiser' => "0",
             'index' => 0,
             'password' =>  Str::uuid(),
             'solde_initial' => 0,

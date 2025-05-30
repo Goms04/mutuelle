@@ -45,6 +45,7 @@ class UserController extends Controller
                 'montant_a_cotiser' => $user->montant_a_cotiser,
                 'solde_initial' => $user->solde_initial,
                 'capital_brut' => $user->capital_brut,
+                'enabled' => $user->enabled,
                 'capital_net' => $user->capital_net,
             ];
         });
@@ -298,6 +299,7 @@ class UserController extends Controller
                     'prenom' => $user->prenom,
                     'email' => $user->email,
                     'sexe' => $user->sexe ? 'Masculin' : 'Féminin', // Affichage du sexe
+                    'index' => $user->index,
                     'role' => $user->role->libelle,
                 ]
             ]);

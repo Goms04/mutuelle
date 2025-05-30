@@ -106,7 +106,7 @@ class CotisationController extends Controller
             ]);
 
             // Récupérer tous les utilisateurs
-            $users = User::where('enable', true)->get();
+            $users = User::where('enabled', true)->get();
 
             // Créer une cotisation pour chaque utilisateur
             foreach ($users as $user) {
@@ -129,6 +129,7 @@ class CotisationController extends Controller
                     'libelle' => 'cotisation mensuelle',
                     'montant' => $user->montant_a_cotiser,
                     'user_id' => $user->id,
+                    'type' => true,
                     'user_ref' => $user->ref,
                 ]);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Historique;
 use App\Models\Pret;
 use App\Models\TraitementPret;
 use App\Models\User;
@@ -109,7 +110,17 @@ class TraitementPretController extends Controller
                         //solde de l'utilisateur qui demandé le prêt - le montant qui lui a été accordé
                         $us = User::where('id', $pret->user_id)->firstOrFail();
                         $us->update([
-                            'solde_initial' => $us->solde_initial - $pret->montant
+                            'solde_initial' => $us->solde_initial - $pret->montant_accorde
+                        ]);
+
+
+                        Historique::create([
+                            'date' => today(),
+                            'libelle' => $pret->motif_pret,
+                            'type' => false,
+                            'montant' => $pret->montant_accorde,
+                            'user_id' => $pret->user->id,
+                            'user_ref' => $pret->user->ref,
                         ]);
                     }
                 } else {

@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 
 class OtppController extends Controller
 {
-    //
+    //Non utilisé
     public function sendOtp(Request $request)
     {
         $request->validate([
@@ -38,13 +38,13 @@ class OtppController extends Controller
         return response()->json(['message' => 'OTP envoyé avec succès.'], 200);
     }
 
-
+    //non utilisé
     public function send()
     {
         return response()->json(['message' => 'OTP envoyé avec succès.'], 200);
     }
 
-
+    // Vérification de l'OTP: non utilisé
     public function verifyOtp(Request $request)
     {
         $request->validate([
@@ -75,7 +75,7 @@ class OtppController extends Controller
     }
 
 
-
+//envoie des 6 chiffres aléatoires
     public function verifyEmail($email)
     {
         $em = User::where('email', $email)->firstOrFail();
@@ -128,6 +128,7 @@ class OtppController extends Controller
     }
 
 
+    //saisir son mot de passe
     public function reset(Request $request)
     {
         DB::beginTransaction();

@@ -74,7 +74,7 @@ class DashboardController extends Controller
     public function solde()
     {
 
-        $solde_total = User::sum('solde_initial');
+        $solde_total = User::where('deleted',false)->sum('solde_initial');
         //$cotisation = UserCotisation::sum('montant_cotise');
         //$evenement = UserEvenement::sum('montant');
 

@@ -124,6 +124,8 @@ class PretController extends Controller
             return [
                 'ref' => $item->ref,
                 'montant' => $item->montant,
+                'email' => $item->user->email,
+                'nom' => $item->user->nom,
                 'motif_pret' => $item->motif_pret,
                 'date_pret' => $item->date_pret,                
                 'montant_accorde' => $item->montant_accorde,
@@ -163,7 +165,7 @@ class PretController extends Controller
             $pret = Pret::create([
                 'ref' => Str::uuid(),
                 'montant_accorde' => $request->input('montant_accorde'),
-                'motif_pret' => $request->input('motif'), //
+                'motif_pret' => $request->input('motif_pret'), //
                 'date_pret' => today(),
                 'nbmois_remboursement' => $request->input('nbmois_remboursement'),
                 'user_id' => Auth::user()->id,

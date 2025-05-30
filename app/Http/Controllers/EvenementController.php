@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 
 class EvenementController extends Controller
 {
-    //Affichage de la page
+    //Affichage des evenements
     public function show()
     {
 
@@ -27,6 +27,18 @@ class EvenementController extends Controller
         ]);
     }
 
+    //Affichage des evenements en fonction de l'utilisateur connecté : /evenements/showuser
+    public function showuser()
+    {
+        $user = Auth::user();
+        $evenements = Evenement::where('user_id', $user->id)->get();
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Données récupérées avec succès',
+            'objet' => $evenements
+        ]);
+    }
 
     //count prêt en fonction de l'utilisateur connecté: evenements/count
     public function countevenement()
