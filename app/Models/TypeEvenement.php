@@ -14,6 +14,7 @@ class TypeEvenement extends Model
         'ref',
         'lib_type',
         'montant',
+        'deleted',
     ];
 
 

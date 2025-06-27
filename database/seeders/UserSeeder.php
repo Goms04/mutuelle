@@ -13,26 +13,32 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    
+    public static string $userRef;
+
     public function run(): void
     {
         //
-        User::create([
+
+       $user = User::create([
             'ref' => Str::uuid(),
-            'nom' => "Platforme",
-            'prenom' => "sys",
+            'nom' => "Plateforme",
+            'prenom' => "Mutuelle",
             'sexe' => 1,
             'date_naissance' => "1995/05/15",
-            'email' => "plateforme@idstechnologie.com",
+            'email' => "mutuelle@idstechnologie.com",
             'role_id' => "1",
             'montant_a_cotiser' => "0",
             'index' => 0,
-            'password' =>  Str::uuid(),
+            'password' =>  Hash::make('Mutuelle@2025'),
             'solde_initial' => 0,
-            'enabled' => false
+            'enabled' => true
         ]);
 
-        User::create([
-            'ref' => Str::uuid(),
+        self::$userRef = $user->ref;
+
+        /* User::create([
+            'ref' => Str::uuid(),  
             'nom' => "Manou",
             'prenom' => "Gratien",
             'sexe' => 1,
@@ -44,6 +50,6 @@ class UserSeeder extends Seeder
             'password' => Hash::make('Gratien04'),
             'solde_initial' => 200000,
             'enabled' => true
-        ]);
+        ]); */
     }
 }

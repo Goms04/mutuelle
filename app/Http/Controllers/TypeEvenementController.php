@@ -13,7 +13,7 @@ class TypeEvenementController extends Controller
 {
     //
     public function show() {
-        $types = TypeEvenement::all();
+        $types = TypeEvenement::where('deleted', false)->get();
         return response()->json([
             'code' => 200,
             'Message' => 'Okay',
@@ -30,10 +30,8 @@ class TypeEvenementController extends Controller
         ]);
     }
 
-
     public function create(Request $request)
     {
-
         DB::beginTransaction();
 
         try {
@@ -75,7 +73,6 @@ class TypeEvenementController extends Controller
 
     public function update(Request $request, $ref)
     {
-
         DB::beginTransaction();
 
         try {
@@ -117,7 +114,10 @@ class TypeEvenementController extends Controller
         try{
 
             $types = TypeEvenement::where('ref', $ref)->firstOrFail();
-            $types->delete($ref);
+            
+            $types->update([
+                'deleted' => true
+            ]);
 
             return response()->json([
                 'code' => 200,

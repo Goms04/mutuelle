@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Historique;
 use App\Models\Poste;
 use App\Models\Role;
 use App\Models\Subdivision;
@@ -129,10 +130,10 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
 
-            
+
             $role = Role::where('ref', $request->input('role_id'))->first();
 
-            
+
             if (!$role) {
                 return response()->json(['error' => 'Référence  de role non valides fournies'], 400);
             }
@@ -150,6 +151,16 @@ class UserController extends Controller
                 'password' => Str::uuid(),
                 'deleted' => false,
                 'enabled' => false,
+            ]);
+
+            
+            Historique::create([
+                'date' => today(),
+                'libelle' => "Création de compte",
+                'montant' => $user->solde_initial,
+                'user_id' => $user->id,
+                'user_ref' => $user->ref,
+                'type' => 1
             ]);
 
             DB::commit();
@@ -187,7 +198,7 @@ class UserController extends Controller
             ]);
 
             $user = User::where('ref', $ref)->firstOrFail();
-            
+
             $role = Role::where('ref', $request->input('role_id'))->first();
 
             $user->update([
@@ -222,7 +233,7 @@ class UserController extends Controller
         try {
             $user = User::where('ref', $ref)->firstOrFail();
             $user->update([
-                'enabled' => false
+                'deleted' => false
             ]);
             return response()->json(['message' => 'Mutualiste supprimé avec succès'], 200);
         } catch (\Exception $e) {
@@ -312,9 +323,10 @@ class UserController extends Controller
     }
 
 
-    public function userind() {
+    public function userind()
+    {
         $users = User::where('index', '>', 0)->get();
-        
+
         return response()->json([
             'statut' => 200,
             'message' => 'Okay',

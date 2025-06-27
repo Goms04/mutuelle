@@ -27,7 +27,8 @@ class Pret extends Model
         'montant_accorde',
         //'duree_remboursement_accorde',
         'user_id',
-        'index'
+        'index',
+        'deleted',
     ];
 
 

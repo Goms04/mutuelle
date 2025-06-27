@@ -52,7 +52,7 @@ class TraitementPretController extends Controller
             $user = Auth::user();
             $pret = Pret::where('ref', $ref)->firstOrFail();
             $users = User::where('deleted', false)
-                ->where('enabled', true)
+                ->where('id','!=', 1)
                 ->get();
 
 
@@ -61,7 +61,7 @@ class TraitementPretController extends Controller
 
                 // Récupérez tous les utilisateurs qui ne sont pas supprimés
                 $uss = User::where('deleted', false)
-                    ->where('enabled', true)
+                    ->where('id','!=', 1)
                     ->get();
                 // Trouvez le maximum de l'index parmi les utilisateurs
                 $maxIndex = $uss->max('index');

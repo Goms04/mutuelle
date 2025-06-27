@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('ref');
             $table->string('lib_type');
             $table->double('montant');
+            $table->boolean('deleted')->default(false);
             $table->timestamps();
         });
 

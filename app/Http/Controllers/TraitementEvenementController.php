@@ -60,7 +60,7 @@ class TraitementEvenementController extends Controller
             //récupérer la liste des users dont l'index eest strictement supérieur à 0
             $users = User::where('deleted', false)
                 ->where('index', '>', 0)
-                ->where('enabled', true)
+                ->where('id','!=', 1)
                 ->get();
             // vérifier et recupérer depuis la table traitement les traitements d'un évènement
             $traitement = TraitementEvenement::where('evenement_ref', $ref)->get();
@@ -74,7 +74,7 @@ class TraitementEvenementController extends Controller
             if ($user->index > 0) {
                 // Récupérez tous les utilisateurs qui ne sont pas supprimés
                 $uss = User::where('deleted', false)
-                    ->where('enabled', true)
+                    ->where('id','!=', 1)
                     ->get();
 
 
@@ -116,7 +116,7 @@ class TraitementEvenementController extends Controller
                             'index' => $user->index
                         ]);
 
-                        $use = User::where('deleted', false)->where('enabled', true)->count();
+                        $use = User::where('deleted', false)->where('id','!=', 1)->count();
                         $nbre = $use - 1; //On enlève l'utilisateur qui a créé l'évènement et l'utilisateur système
 
                         //on trouve le montant cotisé par chacun

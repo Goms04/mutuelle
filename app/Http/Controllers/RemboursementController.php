@@ -180,7 +180,10 @@ class RemboursementController extends Controller
             //$user = Auth::user();
 
             //on récupère tous les prêts non soldés
-            $pret = Pret::where('soldout', false)->get();
+            $pret = Pret::where('soldout', false)
+            ->where('isfinished', true)
+            ->where('validated', true)
+            ->get();
 
             //on va parcourir les prêts
             foreach ($pret as $p) {
@@ -311,8 +314,14 @@ class RemboursementController extends Controller
     {
         DB::beginTransaction();
         try {
+            
             // Récupérer tous les prêts non soldés
-            $prets = Pret::where('soldout', false)->get();
+            $prets = Pret::where('soldout', false)
+            ->where('isfinished', true)
+            ->where('validated', true)
+            ->get();
+
+            //dd($prets);
 
             foreach ($prets as $pret) {
                 $user = User::findOrFail($pret->user_id);

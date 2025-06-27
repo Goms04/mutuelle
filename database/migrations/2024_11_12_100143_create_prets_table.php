@@ -28,6 +28,7 @@ return new class extends Migration
             //$table->double('quotite_cessible')->nullable();
             $table->boolean('validated')->default(0);
             $table->tinyInteger('index')->default(0);
+            $table->boolean('deleted')->default(false);
             $table->double('montant_accorde')->nullable();
             //$table->integer('duree_remboursement_accorde')->nullable();
             $table->unsignedBigInteger('user_id');

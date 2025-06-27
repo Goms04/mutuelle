@@ -106,7 +106,7 @@ class CotisationController extends Controller
             ]);
 
             // Récupérer tous les utilisateurs
-            $users = User::where('enabled', true)->get();
+            $users = User::where('deleted', false)->get();
 
             // Créer une cotisation pour chaque utilisateur
             foreach ($users as $user) {

@@ -124,7 +124,6 @@ Route::middleware(['api', 'adval'])->group(function () {
 
     Route::POST('users/creer/', UserController::class . '@register');
     Route::PUT('/users/modifier/{ref}', UserController::class . '@update')->name('user.update');
-    Route::POST('/users/supprimer/{ref}', UserController::class . '@delete')->name('user.delete');
     Route::GET('/users/{ref}', UserController::class . '@showobject')->name('user');
     Route::GET('/users/', UserController::class . '@show');
     
@@ -148,7 +147,6 @@ Route::middleware(['api', 'adval'])->group(function () {
     Route::GET('type_evenements/{ref}', TypeEvenementController::class . '@showobject'); //Trésorier
     Route::POST('type_evenements/creer', TypeEvenementController::class . '@create'); //Trésorier
     Route::PUT('type_evenements/modifier/{ref}', TypeEvenementController::class . '@update'); //Trésorier
-    Route::POST('type_evenements/supprimer/{ref}', TypeEvenementController::class . '@delete'); //Trésorier
 
 
     //Evènement
@@ -172,7 +170,7 @@ Route::middleware(['api', 'admin'])->group(function () {
 
     // Routes pour les rôles
     Route::POST('roles/creer/', RoleController::class . '@create');
-    Route::POST('roles/supprimer/{ref}', RoleController::class . '@delete');
+    Route::DELETE('roles/supprimer/{ref}', RoleController::class . '@delete');
     Route::PUT('roles/modifier/{ref}', RoleController::class . '@update');
     Route::GET('roles/', RoleController::class . '@show');
     Route::GET('roles/{ref}', RoleController::class . '@showobject');
@@ -180,8 +178,9 @@ Route::middleware(['api', 'admin'])->group(function () {
 
     //Route::POST('evenements/supprimer/{ref}', EvenementController::class . '@delete'); 
 
-
+    Route::DELETE('type_evenements/supprimer/{ref}', TypeEvenementController::class . '@delete'); //admin
     Route::PUT('/users/modifier/index/{ref}', UserController::class . '@index'); // modifier un index
+    Route::DELETE('/users/supprimer/{ref}', UserController::class . '@delete')->name('user.delete');
 
 
 });
