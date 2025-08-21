@@ -91,73 +91,58 @@ class RemboursementController extends Controller
 
             //$user = Auth::user();
 
-            $prets = Pret::where('ref', $ref)->firstOrFail();
-            $user = User::where('id', $prets->user_id)->firstOrFail();
+            $user = User::where('ref', $ref)->firstOrFail();
+            $prets = Pret::where('soldout', false)
+                ->where('isfinished', true)
+                ->where('validated', true)
+                ->where('user_id', $user->id)
+            ->get();
 
+            foreach ($prets as $pret) {
+                $somme_remboursement = Remboursement::where('pret_id', $pret->id)->sum('montant');
+                $pourcentage = $pret->montant_accorde * 0.05;
+                $montant_restant = $pret->montant_accorde - $somme_remboursement;
 
+                $remboursement = Remboursement::create([
+                    'ref' => Str::uuid(),
+                    'date_remboursement' => today(),
+                    'montant' => $montant_restant,
+                    'pret_id' => $pret->id,
+                    'pret_ref' => $pret->ref,
+                    'user_id' => $user->id,
+                    'ref_user' => $user->ref,
+                    'email' => $user->email,
+                ]);
 
-            $remboursement = Remboursement::create([
-                'ref' => Str::uuid(),
-                'date_remboursement' => today(),
-                'montant' => $request->input('montant'),
-                'pret_id' => $prets->id,
-                'pret_ref' => $ref,
-                'user_id' => $user->id,
-                'ref_user' => $user->ref,
-                'email' => $user->email,
-            ]);
-
-
-            Historique::create([
-                'date' => today(),
-                'libelle' => 'Rembousement mensuelle manuel',
-                'montant' => $request->input('montant'),
-                'user_id' => $user->id,
-                'user_ref' => $user->ref,
-                'type' => true
-            ]);
-
-
-
-            $somme_remboursement = Remboursement::where('pret_id', $prets->id)->sum('montant');
-            $aremb = $prets->montant_accorde + ($prets->montant_accorde * 5 / 100);
-
-            if ($somme_remboursement > $prets->montant_accorde) {
+                Historique::create([
+                    'date' => today(),
+                    'libelle' => 'Rembousement mensuel manuel',
+                    'montant' => $montant_restant,
+                    'user_id' => $user->id,
+                    'user_ref' => $user->ref,
+                    'type' => true
+                ]);
 
                 $user_system = User::where('id', 1)->firstOrFail();
 
                 $user_system->update([
-                    'solde_initial' => $user_system->solde_initial + ($aremb - $prets->montant_accorde)
+                    'solde_initial' => $user_system->solde_initial + $pourcentage,
                 ]);
 
                 $user->update([
                     'solde_initial' => $user->solde_initial + $remboursement->montant
                 ]);
-            } else {
-                $user->update([
-                    'solde_initial' => $user->solde_initial + $remboursement->montant
-                ]);
-            }
 
-            if ($somme_remboursement >= $aremb) {
-                $prets->update([
+
+                $pret->update([
                     'soldout' => true
                 ]);
             }
 
-
-            $data = $remboursement->map(function ($item) use ($ref) {
-                return [
-                    'pret_ref' => $ref,
-                    'montant' => $item->montant,
-                ];
-            });
-
             DB::commit();
             return response()->json([
                 'code' => 200,
-                'message' => 'Prêt exécuté avec succès',
-                'code' => $data,
+                'message' => 'Prêt exécuté avec succès'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -181,9 +166,9 @@ class RemboursementController extends Controller
 
             //on récupère tous les prêts non soldés
             $pret = Pret::where('soldout', false)
-            ->where('isfinished', true)
-            ->where('validated', true)
-            ->get();
+                ->where('isfinished', true)
+                ->where('validated', true)
+                ->get();
 
             //on va parcourir les prêts
             foreach ($pret as $p) {
@@ -314,12 +299,12 @@ class RemboursementController extends Controller
     {
         DB::beginTransaction();
         try {
-            
+
             // Récupérer tous les prêts non soldés
             $prets = Pret::where('soldout', false)
-            ->where('isfinished', true)
-            ->where('validated', true)
-            ->get();
+                ->where('isfinished', true)
+                ->where('validated', true)
+                ->get();
 
             //dd($prets);
 

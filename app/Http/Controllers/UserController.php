@@ -18,7 +18,7 @@ class UserController extends Controller
     //Affichage de la page
     public function show()
     {
-        $users = User::all();
+        $users = User::where('deleted', false)->get();
         // Transformer la collection en un tableau de données souhaitées
         $userData = $users->map(function ($user) {
             return [
@@ -153,7 +153,7 @@ class UserController extends Controller
                 'enabled' => false,
             ]);
 
-            
+
             Historique::create([
                 'date' => today(),
                 'libelle' => "Création de compte",
@@ -232,10 +232,32 @@ class UserController extends Controller
     {
         try {
             $user = User::where('ref', $ref)->firstOrFail();
-            $user->update([
-                'deleted' => false
+
+            // Prêts non soldés
+            $pretsNonSoldes = $user->pret()->where('soldout', false)->get();
+            //dd($pretsNonSoldes);
+
+            // Calcul du débit total : somme des (montant_accorde - somme remboursements)
+            $debit = $pretsNonSoldes->sum(function ($pret) {
+                $totalRembourse = $pret->remboursement()->sum('montant');
+                return $pret->montant_accorde - $totalRembourse;
+            });
+
+            if ($user->solde_initial == 0 && $debit <= 0) {
+                $user->update([
+                    'deleted' => true
+                ]);
+            } else {
+                return response()->json([
+                    'code' => 400,
+                    'message' => 'Mutualiste doit d\'abord rembourser sa dette'
+                ]);
+            }
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'Mutualiste supprimé avec succès'
             ]);
-            return response()->json(['message' => 'Mutualiste supprimé avec succès'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Erreur lors de la suppression du mutualiste', 'error' => $e->getMessage()], 500);
         }

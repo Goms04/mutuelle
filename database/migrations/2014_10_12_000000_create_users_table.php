@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')->references('id')->on('roles');
             $table->double('montant_a_cotiser')->nullable();
-            $table->double('solde_initial')->nullable();
+            $table->double('solde_initial', 15, 2)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->tinyInteger('index')->default(0);

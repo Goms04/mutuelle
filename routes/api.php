@@ -16,6 +16,7 @@ use App\Http\Controllers\TraitementPretController;
 use App\Http\Controllers\TypeEvenementController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserCotisationController;
+use App\Models\Remboursement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -93,6 +94,7 @@ Route::middleware(['api', 'advalmu'])->group(function () {
 
     
     Route::GET('/historique/', HistoriqueController::class . '@historique');
+    Route::GET('historique/un/', HistoriqueController::class . '@histoun');
 
     Route::GET('prets/all', PretController::class . '@showall'); //getall()
     Route::GET('prets/show', PretController::class . '@showme'); //show()
@@ -110,7 +112,7 @@ Route::middleware(['api', 'advalmu'])->group(function () {
     Route::GET('remboursements/{ref}', RemboursementController::class . '@getone'); //get 1 remboursement
     Route::GET('remboursements/pret/{ref}', RemboursementController::class . '@getrp'); //get tous remboursement en fonction du pret
     Route::GET('remboursements/', RemboursementController::class . '@getall'); //get tous les remboursements
-    Route::POST('/remboursements/lancer/{ref}', RemboursementController::class . '@rembourser'); //rembousements
+    //Route::POST('/remboursements/lancer/{ref}', RemboursementController::class . '@rembourser'); //rembousements
 
 
 
@@ -146,6 +148,7 @@ Route::middleware(['api', 'adval'])->group(function () {
     
     Route::GET('type_evenements/{ref}', TypeEvenementController::class . '@showobject'); //Trésorier
     Route::POST('type_evenements/creer', TypeEvenementController::class . '@create'); //Trésorier
+    
     Route::PUT('type_evenements/modifier/{ref}', TypeEvenementController::class . '@update'); //Trésorier
 
 
@@ -160,8 +163,16 @@ Route::middleware(['api', 'adval'])->group(function () {
 
 
     //Traitement
-    
     Route::POST('evenements/valider/{ref}', TraitementEvenementController::class . '@lancer');
+
+    //Historique
+    Route::POST('historique/tous/', HistoriqueController::class . '@adminhistorique');
+    
+    Route::POST('historique/moins/{ref}', HistoriqueController::class . '@debiter');
+    Route::POST('historique/plus/{ref}', HistoriqueController::class . '@crediter');
+    Route::GET('historique/unuser/{ref}', HistoriqueController::class . '@histouser');
+    Route::POST('remboursements/manuel/{ref}', RemboursementController::class . '@rembourser');
+
 });
 
 
