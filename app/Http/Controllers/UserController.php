@@ -245,7 +245,8 @@ class UserController extends Controller
 
             if ($user->solde_initial == 0 && $debit <= 0) {
                 $user->update([
-                    'deleted' => true
+                    'deleted' => true,
+                    'enabled' => false
                 ]);
             } else {
                 return response()->json([
@@ -356,6 +357,15 @@ class UserController extends Controller
         ]);
     }
 
+    //liste des utilisateurs supprimés
+    public function utilsup(Request $request) {
+         $users = User::where('deleted', true)
+         ->get();
 
-    public function reinitialiser(Request $request) {}
+        return response()->json([
+            'code' => 200,
+            'message' => 'Okay',
+            'objet' => $users,
+        ]);
+    }
 }

@@ -181,4 +181,36 @@ class TraitementPretController extends Controller
             ]);
         }
     }
+
+    public function valpret($email)
+    {
+        $user = User::where('email', $email)->firstOrFail();
+
+        // Prêts non soldés
+        $pretsNonSoldes = $user->pret()->where('soldout', false)
+            ->where('isfinished', true)
+            ->where('validated', true)
+        ->get();
+
+        // Calcul du débit total
+        $debit = $pretsNonSoldes->sum(function ($pret) {
+            $totalRembourse = $pret->remboursement()->sum('montant');
+            return 1.05 * ($pret->montant_accorde) - $totalRembourse;
+        });
+
+        // Tableau final
+        $historique = [
+            'nom'           => $user->nom,
+            'prenom'        => $user->prenom,
+            'credit'        => $user->usercotisation->sum('montant_cotise'),
+            'debit'         => $debit,
+            'solde_actuel'  => $user->solde_initial,
+        ];
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Okay',
+            'objet' => $historique
+        ]);
+    }
 }

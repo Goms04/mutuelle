@@ -59,6 +59,7 @@ class HistoriqueController extends Controller
                 'prenom' => $user->prenom,
                 'credit' => $user->usercotisation->sum('montant_cotise'),
                 'debit' => $debit,
+                'nombre_pret' => $pretsNonSoldes->count(),
                 'solde_actuel' => $user->solde_initial,
             ];
         });
@@ -69,6 +70,7 @@ class HistoriqueController extends Controller
             'objet' => $historique
         ]);
     }
+
 
 
     public function histoun()
@@ -113,7 +115,7 @@ class HistoriqueController extends Controller
         $pretsNonSoldes = $user->pret()->where('soldout', false)
             ->where('isfinished', true)
             ->where('validated', true)
-        ->get();
+            ->get();
 
         // Calcul du débit total
         $debit = $pretsNonSoldes->sum(function ($pret) {
@@ -136,6 +138,7 @@ class HistoriqueController extends Controller
             'objet' => $historique
         ]);
     }
+
 
     public function crediter($ref)
     {
@@ -172,6 +175,7 @@ class HistoriqueController extends Controller
         }
     }
 
+
     public function debiter($ref)
     {
         DB::beginTransaction();
@@ -206,5 +210,84 @@ class HistoriqueController extends Controller
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+
+    public function showtotpret()
+    {
+        $user = Auth::user(); // Récupère l'utilisateur connecté
+
+        // Prêts non soldés
+        $pretsNonSoldes = $user->pret()->where('soldout', false)
+            ->where('isfinished', true)
+            ->where('validated', true)
+            ->get();
+
+        // Calcul du débit total
+        $debit = $pretsNonSoldes->sum(function ($pret) {
+            $totalRembourse = $pret->remboursement()->sum('montant');
+            return 1.05 * ($pret->montant_accorde) - $totalRembourse;
+        });
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Okay',
+            'objet' => $debit
+        ]);
+    }
+
+
+
+    public function showcotisation()
+    {
+
+        $user = Auth::user(); // Récupère l'utilisateur connecté
+
+        $total_cotisation = $user->usercotisation->sum('montant_cotise');
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Okay',
+            'objet' => $total_cotisation
+        ]);
+    }
+
+
+
+    public function showetatcompte()
+    {
+        $user = Auth::user(); // Récupère l'utilisateur connecté
+
+        // Prêts non soldés
+        $pretsNonSoldes = $user->pret()->where('soldout', false)
+            ->where('isfinished', true)
+            ->where('validated', true)
+            ->get();
+
+        // Calcul du débit total (en gros c'est la somme de tout ce qu'il lui reste à rembourser)
+        $debit = $pretsNonSoldes->sum(function ($pret) {
+            $totalRembourse = $pret->remboursement()->sum('montant');
+            return 1.05 * ($pret->montant_accorde) - $totalRembourse;
+        });
+
+        // nombre de prêt en cours
+        $nbpret = $pretsNonSoldes->count();
+
+        // Tableau final
+        $historique = [
+            'nom' => $user->nom,
+            'prenom' => $user->prenom,
+            'credit' => $user->usercotisation->sum('montant_cotise'),
+            'debit' => $debit,
+            'nombre_pret' => $nbpret,
+            'solde_actuel' => $user->solde_initial,
+        ];
+
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Okay',
+            'objet' => [$historique]
+        ]);
     }
 }

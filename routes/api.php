@@ -113,8 +113,11 @@ Route::middleware(['api', 'advalmu'])->group(function () {
     Route::GET('remboursements/pret/{ref}', RemboursementController::class . '@getrp'); //get tous remboursement en fonction du pret
     Route::GET('remboursements/', RemboursementController::class . '@getall'); //get tous les remboursements
     //Route::POST('/remboursements/lancer/{ref}', RemboursementController::class . '@rembourser'); //rembousements
+    
 
-
+    Route::GET('dashboard/totalprets', HistoriqueController::class . '@showtotpret');
+    Route::GET('dashboard/totalcotisations', HistoriqueController::class . '@showcotisation');
+    Route::GET('historique/etatcompte', HistoriqueController::class . '@showetatcompte');
 
 });
 
@@ -129,7 +132,8 @@ Route::middleware(['api', 'adval'])->group(function () {
     Route::GET('/users/{ref}', UserController::class . '@showobject')->name('user');
     Route::GET('/users/', UserController::class . '@show');
     
-
+    
+    Route::GET('/usersdelete', UserController::class . '@utilsup');
 
 
     //Routes pour trésorier(middleware à créer après)
@@ -171,6 +175,7 @@ Route::middleware(['api', 'adval'])->group(function () {
     Route::POST('historique/moins/{ref}', HistoriqueController::class . '@debiter');
     Route::POST('historique/plus/{ref}', HistoriqueController::class . '@crediter');
     Route::GET('historique/unuser/{ref}', HistoriqueController::class . '@histouser');
+    Route::GET('prets/traitements/unuser/{email}', TraitementPretController::class . '@valpret');
     Route::POST('remboursements/manuel/{ref}', RemboursementController::class . '@rembourser');
 
 });
@@ -192,8 +197,8 @@ Route::middleware(['api', 'admin'])->group(function () {
     Route::DELETE('type_evenements/supprimer/{ref}', TypeEvenementController::class . '@delete'); //admin
     Route::PUT('/users/modifier/index/{ref}', UserController::class . '@index'); // modifier un index
     Route::DELETE('/users/supprimer/{ref}', UserController::class . '@delete')->name('user.delete');
-
-
+    
+    
 });
 
 
